@@ -1,0 +1,8 @@
+[build]
+  publish = "."
+  command = "bash build.sh"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

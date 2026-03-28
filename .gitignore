@@ -1,0 +1,12 @@
+# Variables d'environnement — ne jamais pusher sur Git
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/

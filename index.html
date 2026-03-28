@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moodborde — Connexion</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --prune:       #6D285B;
+    --violet-bleu: #8957B0;
+    --rose:        #FFBFEF;
+    --lavande:     #E0D0FF;
+    --electrique:  #9866FA;
+    --fond:        #F3EEF8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--prune);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Fond décoratif */
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+  }
+
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: var(--electrique);
+    top: -150px; right: -100px;
+    animation: float1 8s ease-in-out infinite;
+  }
+
+  .orb-2 {
+    width: 400px; height: 400px;
+    background: var(--rose);
+    bottom: -100px; left: -80px;
+    animation: float2 10s ease-in-out infinite;
+  }
+
+  .orb-3 {
+    width: 300px; height: 300px;
+    background: var(--lavande);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float3 12s ease-in-out infinite;
+  }
+
+  @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-30px, 20px); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(20px,-30px); } }
+  @keyframes float3 { 0%,100% { transform: translate(-50%,-50%); } 50% { transform: translate(-45%,-55%); } }
+
+  .login-card {
+    position: relative;
+    z-index: 1;
+    background: rgba(243,238,248,0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(224,208,255,0.2);
+    border-radius: 28px;
+    padding: 56px 48px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+  }
+
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px; height: 64px;
+    background: var(--electrique);
+    border-radius: 18px;
+    margin-bottom: 24px;
+    font-size: 28px;
+  }
+
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--lavande);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+
+  .brand-sub {
+    font-size: 12px;
+    color: rgba(224,208,255,0.5);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--electrique);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.02em;
+  }
+
+  .login-btn:hover {
+    background: #7A4AE0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(152,102,250,0.4);
+  }
+
+  .login-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(224,208,255,0.35);
+  }
+
+  /* Loading state */
+  .loading {
+    display: none;
+    color: rgba(224,208,255,0.6);
+    font-size: 14px;
+    margin-top: 16px;
+  }
+
+  .loading.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="login-card">
+  <div class="brand-mark">🌿</div>
+  <div class="brand-name">Moodborde</div>
+  <div class="brand-sub">Dashboard Instagram</div>
+
+  <button class="login-btn" onclick="openLogin()">
+    Se connecter
+  </button>
+
+  <div class="loading" id="loading">Connexion en cours…</div>
+  <div class="login-note">Accès réservé</div>
+</div>
+
+<script>
+  // Initialise Netlify Identity
+  netlifyIdentity.init();
+
+  // Si déjà connecté → redirige directement
+  netlifyIdentity.on('init', user => {
+    if (user) window.location.href = '/dashboard.html';
+  });
+
+  // Après login réussi → redirige
+  netlifyIdentity.on('login', user => {
+    document.getElementById('loading').classList.add('show');
+    window.location.href = '/dashboard.html';
+  });
+
+  function openLogin() {
+    netlifyIdentity.open('login');
+  }
+</script>
+</body>
+</html>
