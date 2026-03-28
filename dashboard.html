@@ -425,6 +425,31 @@
   .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
   .empty-state p { font-size: 15px; line-height: 1.6; }
 
+  /* ===== CHAMPS DYNAMIQUES FORMAT ===== */
+  .format-section { border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; background: var(--surface); }
+  .format-section-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--mid); }
+
+  .slides-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .slide-row { display: flex; align-items: center; gap: 8px; }
+  .slide-num { width: 24px; height: 24px; background: var(--lavande); color: var(--prune); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .slide-num.first { background: var(--electrique); color: white; }
+  .slide-num.last  { background: var(--prune); color: white; }
+
+  .slide-input { flex: 1; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--fond); color: var(--prune); outline: none; transition: border-color 0.2s; }
+  .slide-input:focus { border-color: var(--electrique); background: white; }
+  .slide-input.hook-slide { border-color: var(--electrique); background: #F8F4FF; font-style: italic; }
+
+  .btn-add-slide { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border: 1.5px dashed var(--border); border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--mid); cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+  .btn-add-slide:hover { border-color: var(--electrique); color: var(--electrique); }
+
+  .btn-remove-slide { width: 22px; height: 22px; border: none; background: #FFE8E8; border-radius: 50%; color: #C44A4A; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; line-height: 1; }
+  .btn-remove-slide:hover { background: #FFC8C8; }
+
+  .story-types { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .story-type-btn { padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 20px; background: var(--fond); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--mid); }
+  .story-type-btn.active { background: var(--electrique); border-color: var(--electrique); color: white; }
+  .story-type-btn:hover:not(.active) { border-color: var(--prune); color: var(--prune); }
+
   .toast { position: fixed; bottom: 32px; right: 32px; background: var(--prune); color: var(--lavande); padding: 14px 24px; border-radius: 12px; font-size: 14px; z-index: 2000; transform: translateY(80px); opacity: 0; transition: all 0.3s; border: 1px solid var(--electrique); }
   .toast.show { transform: translateY(0); opacity: 1; }
 
@@ -621,6 +646,8 @@
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
+
+      <!-- CHAMPS COMMUNS -->
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Pilier</label>
@@ -632,11 +659,11 @@
         </div>
         <div class="form-group">
           <label class="form-label">Format</label>
-          <select class="form-select" id="f-format">
-            <option value="carousel">Carousel</option>
-            <option value="reel">Reel</option>
-            <option value="post">Post photo</option>
-            <option value="story">Story</option>
+          <select class="form-select" id="f-format" onchange="updateFormatFields()">
+            <option value="carousel">🎠 Carousel</option>
+            <option value="reel">🎬 Reel</option>
+            <option value="post">📷 Post photo</option>
+            <option value="story">⭕ Story</option>
           </select>
         </div>
       </div>
@@ -654,27 +681,31 @@
           <input type="date" class="form-input" id="f-date">
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Titre / idée</label>
-        <input type="text" class="form-input" id="f-title" placeholder="Ex: 5 marques françaises à découvrir…">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Titre / idée</label>
+          <input type="text" class="form-input" id="f-title" placeholder="Le sujet du post…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Statut</label>
+          <select class="form-select" id="f-status">
+            <option value="draft">Brouillon</option>
+            <option value="ready">Prêt</option>
+            <option value="scheduled">Planifié</option>
+            <option value="published">Publié</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Statut</label>
-        <select class="form-select" id="f-status">
-          <option value="draft">Brouillon</option>
-          <option value="ready">Prêt</option>
-          <option value="scheduled">Planifié</option>
-          <option value="published">Publié</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes / contenu</label>
-        <textarea class="form-textarea" id="f-notes" placeholder="Notes, texte, idées visuelles…"></textarea>
-      </div>
-      <div class="hook-suggestions">
-        <div class="hook-suggestion-title">💜 Hooks suggérés — clique pour utiliser</div>
+
+      <!-- HOOK SUGGESTIONS -->
+      <div class="hook-suggestions" style="margin-bottom:16px">
+        <div class="hook-suggestion-title">💜 Hooks suggérés — clique pour utiliser comme titre</div>
         <div id="hook-suggestions-list"></div>
       </div>
+
+      <!-- CHAMPS DYNAMIQUES PAR FORMAT -->
+      <div id="format-fields"></div>
+
       <div class="form-actions">
         <button class="btn-danger" id="delete-btn" onclick="deletePost()" style="display:none">Supprimer</button>
         <button class="btn-secondary" onclick="closeModal()">Annuler</button>
@@ -962,17 +993,152 @@ function renderStrategy() {
     </div>`).join('');
 }
 
+// ===== CHAMPS DYNAMIQUES PAR FORMAT =====
+
+const FORMAT_TEMPLATES = {
+  carousel: (data={}) => {
+    const slides = data.slides || ['','',''];
+    return `
+      <div class="format-section">
+        <div class="format-section-title">🎠 Structure du carousel
+          <span style="background:var(--rose);color:var(--prune);padding:2px 10px;border-radius:20px;font-size:10px">Slides</span>
+        </div>
+        <div class="slides-list" id="slides-list">
+          ${slides.map((s,i) => slideRow(s, i, slides.length)).join('')}
+        </div>
+        <button class="btn-add-slide" onclick="addSlide()">+ Ajouter une slide</button>
+      </div>
+      <div class="format-section">
+        <div class="format-section-title">📣 CTA dernière slide</div>
+        <input type="text" class="form-input" id="f-cta" placeholder="Ex: Sauvegarde ce post pour ne pas oublier !" value="${data.cta||''}">
+      </div>
+      <div class="format-section">
+        <div class="format-section-title">📝 Notes visuelles</div>
+        <textarea class="form-textarea" id="f-notes" placeholder="Ambiance visuelle, couleurs, inspo…" style="min-height:70px">${data.notes||''}</textarea>
+      </div>`;
+  },
+
+  reel: (data={}) => `
+    <div class="format-section">
+      <div class="format-section-title">🎬 Accroche — 3 premières secondes</div>
+      <input type="text" class="form-input" id="f-hook-oral" placeholder="Ce que tu dis ou fais en ouverture…" value="${data.hook_oral||''}">
+    </div>
+    <div class="format-section">
+      <div class="format-section-title">🎥 Concept vidéo</div>
+      <textarea class="form-textarea" id="f-concept" placeholder="Décris le déroulé de la vidéo, les scènes clés…" style="min-height:90px">${data.concept||''}</textarea>
+    </div>
+    <div class="format-section">
+      <div class="format-section-title">💬 Légende (caption)</div>
+      <textarea class="form-textarea" id="f-notes" placeholder="Texte qui accompagne le reel dans le feed…" style="min-height:70px">${data.notes||''}</textarea>
+    </div>`,
+
+  post: (data={}) => `
+    <div class="format-section">
+      <div class="format-section-title">📷 Idée visuelle</div>
+      <input type="text" class="form-input" id="f-visual" placeholder="Ex: flat lay fond beige, portrait en extérieur…" value="${data.visual||''}">
+    </div>
+    <div class="format-section">
+      <div class="format-section-title">💬 Légende complète</div>
+      <textarea class="form-textarea" id="f-notes" placeholder="Texte du post, avec le hook en première ligne…" style="min-height:110px">${data.notes||''}</textarea>
+    </div>`,
+
+  story: (data={}) => {
+    const types = ['📊 Sondage','❓ Question','🧠 Quiz','🔗 Lien','📣 Annonce','✨ Contenu libre'];
+    const current = data.story_type || '';
+    return `
+      <div class="format-section">
+        <div class="format-section-title">⭕ Type de story</div>
+        <div class="story-types">
+          ${types.map(t => `<button class="story-type-btn ${current===t?'active':''}" onclick="selectStoryType(this,'${t}')">${t}</button>`).join('')}
+        </div>
+        <input type="hidden" id="f-story-type" value="${current}">
+      </div>
+      <div class="format-section">
+        <div class="format-section-title">✏️ Texte principal</div>
+        <textarea class="form-textarea" id="f-notes" placeholder="Ce qui apparaît sur la story…" style="min-height:80px">${data.notes||''}</textarea>
+      </div>
+      <div class="format-section">
+        <div class="format-section-title">👆 Action attendue</div>
+        <input type="text" class="form-input" id="f-cta" placeholder="Ex: Vote, réponds, swipe up, clique sur le lien…" value="${data.cta||''}">
+      </div>`;
+  }
+};
+
+function slideRow(value, index, total) {
+  const isFirst = index === 0;
+  const isLast  = index === total - 1;
+  const numClass = isFirst ? 'first' : isLast ? 'last' : '';
+  const placeholder = isFirst
+    ? 'Slide 1 — Hook (accroche principale)'
+    : isLast
+    ? `Slide ${index+1} — CTA / conclusion`
+    : `Slide ${index+1} — Contenu`;
+  const inputClass = isFirst ? 'slide-input hook-slide' : 'slide-input';
+  return `<div class="slide-row" data-index="${index}">
+    <div class="slide-num ${numClass}">${index+1}</div>
+    <input type="text" class="${inputClass}" placeholder="${placeholder}" value="${value}">
+    ${total > 2 ? `<button class="btn-remove-slide" onclick="removeSlide(${index})" title="Supprimer">×</button>` : ''}
+  </div>`;
+}
+
+function addSlide() {
+  const slides = getSlides();
+  slides.push('');
+  document.getElementById('slides-list').innerHTML = slides.map((s,i) => slideRow(s, i, slides.length)).join('');
+}
+
+function removeSlide(index) {
+  const slides = getSlides();
+  slides.splice(index, 1);
+  document.getElementById('slides-list').innerHTML = slides.map((s,i) => slideRow(s, i, slides.length)).join('');
+}
+
+function getSlides() {
+  return [...document.querySelectorAll('#slides-list .slide-input')].map(el => el.value);
+}
+
+function selectStoryType(btn, type) {
+  document.querySelectorAll('.story-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('f-story-type').value = type;
+}
+
+function updateFormatFields(data={}) {
+  const format = document.getElementById('f-format').value;
+  document.getElementById('format-fields').innerHTML = FORMAT_TEMPLATES[format]?.(data) || '';
+}
+
+function getFormatData() {
+  const format = document.getElementById('f-format').value;
+  const data = { notes: document.getElementById('f-notes')?.value || '' };
+  if (format === 'carousel') {
+    data.slides = getSlides();
+    data.cta = document.getElementById('f-cta')?.value || '';
+  } else if (format === 'reel') {
+    data.hook_oral = document.getElementById('f-hook-oral')?.value || '';
+    data.concept   = document.getElementById('f-concept')?.value || '';
+  } else if (format === 'post') {
+    data.visual = document.getElementById('f-visual')?.value || '';
+  } else if (format === 'story') {
+    data.story_type = document.getElementById('f-story-type')?.value || '';
+    data.cta        = document.getElementById('f-cta')?.value || '';
+  }
+  return data;
+}
+
 // ===== MODAL =====
 function openModal(){
   editingId=null;
   document.getElementById('modal-title').textContent='Nouveau post';
   document.getElementById('delete-btn').style.display='none';
-  ['f-title','f-notes','f-date'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-title').value='';
+  document.getElementById('f-date').value='';
   document.getElementById('f-pillar').value='mode';
   document.getElementById('f-format').value='carousel';
   document.getElementById('f-target').value='particuliers';
   document.getElementById('f-status').value='draft';
   updateHooks();
+  updateFormatFields();
   document.getElementById('modal-overlay').classList.add('open');
 }
 
@@ -982,13 +1148,15 @@ function openEditModal(id){
   document.getElementById('modal-title').textContent='Modifier le post';
   document.getElementById('delete-btn').style.display='block';
   document.getElementById('f-title').value=p.title||'';
-  document.getElementById('f-notes').value=p.notes||'';
   document.getElementById('f-date').value=p.date||'';
   document.getElementById('f-pillar').value=p.pillar||'mode';
   document.getElementById('f-format').value=p.format||'carousel';
   document.getElementById('f-target').value=p.target||'particuliers';
   document.getElementById('f-status').value=p.status||'draft';
   updateHooks();
+  // Recharge les champs avec les données sauvegardées
+  const saved = p.format_data ? JSON.parse(p.format_data) : {};
+  updateFormatFields(saved);
   document.getElementById('modal-overlay').classList.add('open');
 }
 
@@ -999,7 +1167,7 @@ function updateHooks(){
   const pillar=document.getElementById('f-pillar').value;
   const target=document.getElementById('f-target').value;
   document.getElementById('hook-suggestions-list').innerHTML=
-    (HOOKS[pillar]?.[target]||[]).map(h=>`<div class="hook-item" onclick="this.parentElement.parentElement.parentElement.querySelector('#f-title').value=this.textContent">${h}</div>`).join('');
+    (HOOKS[pillar]?.[target]||[]).map(h=>`<div class="hook-item" onclick="document.getElementById('f-title').value=this.textContent">${h}</div>`).join('');
 }
 
 async function savePost(){
@@ -1007,9 +1175,12 @@ async function savePost(){
   if(!title){showToast('Ajoute un titre !');return;}
   const btn=document.getElementById('save-btn');
   btn.innerHTML='Saving <span class="loader"></span>'; btn.disabled=true;
+  const formatData = getFormatData();
   const post={
     id: editingId||('post-'+Date.now()),
-    title, notes: document.getElementById('f-notes').value,
+    title,
+    format_data: JSON.stringify(formatData),
+    notes: formatData.notes || '',
     date: document.getElementById('f-date').value,
     pillar: document.getElementById('f-pillar').value,
     format: document.getElementById('f-format').value,
@@ -1022,7 +1193,7 @@ async function savePost(){
     await upsertPost(post);
     showToast(editingId?'✓ Post modifié':'✓ Post ajouté');
     closeModal(); renderCurrentView();
-  } catch(e){showToast('Erreur');}
+  } catch(e){showToast('Erreur : '+e.message); console.error(e);}
   finally{btn.innerHTML='Sauvegarder';btn.disabled=false;}
 }
 
@@ -1036,6 +1207,7 @@ async function deletePost(){
 function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
 
 document.getElementById('f-target').addEventListener('change',updateHooks);
+document.getElementById('f-format').addEventListener('change',()=>updateFormatFields());
 </script>
 </body>
 </html>
